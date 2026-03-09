@@ -1,12 +1,20 @@
 services:
-  app:
-    entrypoint:
-    - sleep
-    - infinity
-    image: docker/dev-environments-default:stable-1
-    init: true
+  jekyll:
+    image: ruby:3.2-slim
+    container_name: mateusmota-blog-dev
+    user: root 
+    command: >
+      sh -c "apt-get update && 
+             apt-get install -y build-essential git &&
+             gem install bundler jekyll && 
+             bundle install && 
+             bundle exec jekyll serve --host 0.0.0.0 --port 4000 --livereload --force_polling"
+    ports:
+      - "4000:4000"
+      - "35729:35729"
     volumes:
-    - type: bind
-      source: /var/run/docker.sock
-      target: /var/run/docker.sock
-
+      - .:/srv/jekyll
+    working_dir: /srv/jekyll
+    environment:
+      - JEKYLL_ENV=development
+    init: true
