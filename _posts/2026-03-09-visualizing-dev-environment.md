@@ -13,4 +13,4 @@ Este diagrama confirma se o motor Mermaid está ativo no servidor:
 graph TD
     A[Git Push] --> B{GitHub Actions}
     B -->|Build| C[GitHub Pages]
-    C -->|Render| D[mateusmota.com.br]
+    C -->|Render| D["mateusmota.com.br"]
