@@ -36,11 +36,11 @@ jobs:
           # (See: https://github.com/cotes2020/chirpy-starter/tree/main/assets)
 
       - name: Lint Markdown
-              uses: DavidAnson/markdownlint-cli2-action@v16
-              with:
-                globs: |
-                  _posts/*.md
-                  _drafts/*.md
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: |
+            _posts/*.md
+            _drafts/*.md
 
       - name: Setup Pages
         id: pages
@@ -57,10 +57,18 @@ jobs:
           sed -i "s/GA_MEASUREMENT_ID_PLACEHOLDER/${{ secrets.GA_MEASUREMENT_ID }}/g" _config.yml
 
       - name: Security Audit (Bundle Audit)
-              run: |
-                gem install bundle-audit
-                bundle-audit update
-                bundle-audit check
+        run: |
+          gem install bundle-audit
+          bundle-audit update
+          bundle-audit check
+
+      - name: Cache Jekyll Build
+        uses: actions/cache@v4
+        with:
+          path: .jekyll-cache
+          key: ${{ runner.os }}-jekyll-${{ hashFiles('Gemfile.lock') }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-jekyll-${{ hashFiles('Gemfile.lock') }}-
 
       - name: Build site
         run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
