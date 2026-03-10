@@ -7,6 +7,7 @@ mermaid: true
 ---
 
 ## Cloud vs Local Workflow
+
 Este diagrama confirma se o motor Mermaid está ativo no servidor:
 
 ```mermaid
@@ -14,3 +15,4 @@ graph TD
     A[Git Push] --> B{GitHub Actions}
     B -->|Build| C[GitHub Pages]
     C -->|Render| D["mateusmota.com.br"]
+```
