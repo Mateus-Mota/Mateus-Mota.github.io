@@ -46,6 +46,12 @@ jobs:
           ruby-version: 3.3
           bundler-cache: true
 
+      - name: Security Audit
+        run: |
+          gem install bundle-audit
+          bundle-audit update
+          bundle-audit check
+
       - name: Inject Google Analytics ID
         run: |
           sed -i "s/GA_MEASUREMENT_ID_PLACEHOLDER/${{ secrets.GA_MEASUREMENT_ID }}/g" _config.yml
@@ -54,6 +60,12 @@ jobs:
         run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}" --future
         env:
           JEKYLL_ENV: "production"
+
+      - name: Lighthouse Audit
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          uploadArtifacts: true
+          temporaryPublicStorage: true
 
       - name: Test site
         run: |
