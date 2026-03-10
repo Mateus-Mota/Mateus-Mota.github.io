@@ -18,8 +18,10 @@ title: Mateus Mota # the main title
 
 tagline: DevOps Analyst # it will display as the subtitle
 
-description: >- # used by seo meta and the atom feed
-  Blog pessoal sobre Infraestrutura de TI, Redes e Cloud.
+description: >-
+  Blog técnico sobre a cultura DevOps, automação de infraestrutura e arquitetura cloud. 
+  Explorações práticas sobre CI/CD, Infrastructure as Code (IaC), Kubernetes e 
+  administração de sistemas Linux para a construção de ambientes escaláveis e seguros.
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
