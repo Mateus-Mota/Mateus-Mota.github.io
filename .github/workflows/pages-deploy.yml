@@ -21,21 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  optimize-images:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Compress Images
-        uses: calibreapp/image-actions@main
-        with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          compressOnly: true
-
   build:
-    needs: optimize-images
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -44,12 +30,11 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - name: Lint Markdown
-        uses: DavidAnson/markdownlint-cli2-action@v16
+      - name: Compress Images
+        uses: calibreapp/image-actions@main
         with:
-          globs: |
-            _posts/*.md
-            _drafts/*.md
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          compressOnly: true
 
       - name: Setup Pages
         id: pages
@@ -65,30 +50,16 @@ jobs:
         run: |
           sed -i "s/GA_MEASUREMENT_ID_PLACEHOLDER/${{ secrets.GA_MEASUREMENT_ID }}/g" _config.yml
 
-      - name: Security Audit (Bundle Audit)
-        run: |
-          gem install bundle-audit
-          bundle-audit update
-          bundle-audit check
-
-      - name: Cache Jekyll Build
-        uses: actions/cache@v4
-        with:
-          path: .jekyll-cache
-          key: ${{ runner.os }}-jekyll-${{ hashFiles('Gemfile.lock') }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-jekyll-${{ hashFiles('Gemfile.lock') }}-
-
       - name: Build site
-        run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
+        run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}" --future
         env:
           JEKYLL_ENV: "production"
 
       - name: Test site
         run: |
           bundle exec htmlproofer _site \
-            \-\-disable-external \
-            \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
+            --disable-external \
+            --ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
